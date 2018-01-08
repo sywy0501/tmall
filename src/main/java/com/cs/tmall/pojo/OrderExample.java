@@ -705,63 +705,63 @@ public class OrderExample {
             return (Criteria) this;
         }
 
-        public Criteria andDeliverDateIsNull() {
-            addCriterion("deliverDate is null");
+        public Criteria andDeliveryDateIsNull() {
+            addCriterion("deliveryDate is null");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverDateIsNotNull() {
-            addCriterion("deliverDate is not null");
+        public Criteria andDeliveryDateIsNotNull() {
+            addCriterion("deliveryDate is not null");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverDateEqualTo(Date value) {
-            addCriterion("deliverDate =", value, "deliverDate");
+        public Criteria andDeliveryDateEqualTo(Date value) {
+            addCriterion("deliveryDate =", value, "deliveryDate");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverDateNotEqualTo(Date value) {
-            addCriterion("deliverDate <>", value, "deliverDate");
+        public Criteria andDeliveryDateNotEqualTo(Date value) {
+            addCriterion("deliveryDate <>", value, "deliveryDate");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverDateGreaterThan(Date value) {
-            addCriterion("deliverDate >", value, "deliverDate");
+        public Criteria andDeliveryDateGreaterThan(Date value) {
+            addCriterion("deliveryDate >", value, "deliveryDate");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverDateGreaterThanOrEqualTo(Date value) {
-            addCriterion("deliverDate >=", value, "deliverDate");
+        public Criteria andDeliveryDateGreaterThanOrEqualTo(Date value) {
+            addCriterion("deliveryDate >=", value, "deliveryDate");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverDateLessThan(Date value) {
-            addCriterion("deliverDate <", value, "deliverDate");
+        public Criteria andDeliveryDateLessThan(Date value) {
+            addCriterion("deliveryDate <", value, "deliveryDate");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverDateLessThanOrEqualTo(Date value) {
-            addCriterion("deliverDate <=", value, "deliverDate");
+        public Criteria andDeliveryDateLessThanOrEqualTo(Date value) {
+            addCriterion("deliveryDate <=", value, "deliveryDate");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverDateIn(List<Date> values) {
-            addCriterion("deliverDate in", values, "deliverDate");
+        public Criteria andDeliveryDateIn(List<Date> values) {
+            addCriterion("deliveryDate in", values, "deliveryDate");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverDateNotIn(List<Date> values) {
-            addCriterion("deliverDate not in", values, "deliverDate");
+        public Criteria andDeliveryDateNotIn(List<Date> values) {
+            addCriterion("deliveryDate not in", values, "deliveryDate");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverDateBetween(Date value1, Date value2) {
-            addCriterion("deliverDate between", value1, value2, "deliverDate");
+        public Criteria andDeliveryDateBetween(Date value1, Date value2) {
+            addCriterion("deliveryDate between", value1, value2, "deliveryDate");
             return (Criteria) this;
         }
 
-        public Criteria andDeliverDateNotBetween(Date value1, Date value2) {
-            addCriterion("deliverDate not between", value1, value2, "deliverDate");
+        public Criteria andDeliveryDateNotBetween(Date value1, Date value2) {
+            addCriterion("deliveryDate not between", value1, value2, "deliveryDate");
             return (Criteria) this;
         }
 

@@ -1,6 +1,7 @@
 package com.cs.tmall.pojo;
 
 import com.cs.tmall.service.OrderService;
+
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class Order {
 
     private Date payDate;
 
-    private Date deliverDate;
+    private Date deliveryDate;
 
     private Date confirmDate;
 
@@ -38,14 +39,6 @@ public class Order {
     private float total;
 
     private int totalNumber;
-
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
 
     public Integer getId() {
         return id;
@@ -119,12 +112,12 @@ public class Order {
         this.payDate = payDate;
     }
 
-    public Date getDeliverDate() {
-        return deliverDate;
+    public Date getDeliveryDate() {
+        return deliveryDate;
     }
 
-    public void setDeliverDate(Date deliverDate) {
-        this.deliverDate = deliverDate;
+    public void setDeliveryDate(Date deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 
     public Date getConfirmDate() {
@@ -151,31 +144,12 @@ public class Order {
         this.status = status == null ? null : status.trim();
     }
 
-    public String getStatusDesc(){
-        String desc = "未知";
-        switch (status){
-            case OrderService.waitPay:
-                desc="待付款";
-                break;
-            case OrderService.waitDelivery:
-                desc="待发货";
-                break;
-            case OrderService.waitConfirm:
-                desc = "待收款";
-                break;
-            case OrderService.waitReview:
-                desc = "等评价";
-                break;
-            case OrderService.finish:
-                desc = "完成";
-                break;
-            case OrderService.delete:
-                desc="删除";
-                break;
-            default:
-                desc="未知";
-        }
-        return desc;
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
     public User getUser() {
@@ -202,4 +176,30 @@ public class Order {
         this.totalNumber = totalNumber;
     }
 
+    public String getStatusDesc(){
+        String desc ="未知";
+        switch(status){
+            case OrderService.waitPay:
+                desc="待付款";
+                break;
+            case OrderService.waitDelivery:
+                desc="待发货";
+                break;
+            case OrderService.waitConfirm:
+                desc="待收货";
+                break;
+            case OrderService.waitReview:
+                desc="等评价";
+                break;
+            case OrderService.finish:
+                desc="完成";
+                break;
+            case OrderService.delete:
+                desc="刪除";
+                break;
+            default:
+                desc="未知";
+        }
+        return desc;
+    }
 }
