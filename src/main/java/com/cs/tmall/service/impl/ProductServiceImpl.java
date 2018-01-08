@@ -59,6 +59,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Product get(int id) {
         Product p = productMapper.selectByPrimaryKey(id);
+        setFirstProductImage(p);
         setCategory(p);
         return p;
     }
