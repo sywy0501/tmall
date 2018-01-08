@@ -50,7 +50,7 @@ public class OrderController {
 
     @RequestMapping("admin_order_delivery")
     public String delivery(Order o) throws IOException {
-        o.setDeliverDate(new Date());
+        o.setDeliveryDate(new Date());
         o.setStatus(OrderService.waitConfirm);
         orderService.update(o);
         return "redirect:admin_order_list";
