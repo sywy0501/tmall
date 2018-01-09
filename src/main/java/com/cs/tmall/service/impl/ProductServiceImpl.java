@@ -11,6 +11,7 @@ import com.cs.tmall.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -75,6 +76,33 @@ public class ProductServiceImpl implements ProductService{
             product.setFirstProductImage(pi);
         }
     }
+
+    @Override
+    public void fill(List<Category> categories) {
+        for (Category c:categories){
+            fill(c);
+        }
+    }
+
+    @Override
+    public void fill(Category category) {
+        List<Product> ps = list(category.getId());
+        category.setProducts(ps);
+    }
+
+    @Override
+    public void fillByRow(List<Category> categories) {
+        int productNumberEachRow = 8;
+        for (Category c:categories){
+            List<Product> products = c.getProducts();
+            List<List<Product>> productsByRow = new ArrayList<>();
+            for (int i = 0;i<products.size();i+=productNumberEachRow){
+                int size = i+productNumberEachRow;
+                size = size>products.size()?products.size():size;
+            }
+        }
+    }
+
     /**
      * 给多个产品设置图片
      * 在list方法中调用为多个产品设置图片
