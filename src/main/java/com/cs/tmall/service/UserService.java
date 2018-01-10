@@ -20,4 +20,5 @@ public interface UserService {
 
     User get(int id);
     List<User> list();
+    User get (String name,String password);
 }
