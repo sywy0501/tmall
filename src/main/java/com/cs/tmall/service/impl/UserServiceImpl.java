@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService {
         if (result.isEmpty()){
             return null;
         }
+
         return result.get(0);
     }
 }
