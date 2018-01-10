@@ -37,6 +37,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isExist(String str) {
+        List<User> users = list();
+        for (User user:users){
+            if (str.equals(user.getName())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public User get(int id) {
         return userMapper.selectByPrimaryKey(id);
     }
