@@ -77,6 +77,9 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
+    /**
+     * 为多个分类填充产品集合
+     **/
     @Override
     public void fill(List<Category> categories) {
         for (Category c:categories){
@@ -84,12 +87,19 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
+    /**
+     * 为分类填充产品集合
+     * */
     @Override
     public void fill(Category category) {
         List<Product> ps = list(category.getId());
         category.setProducts(ps);
     }
 
+    /**
+     * 为多个分类填充推荐产品集合
+     * 把分类下的产品集合，按照8个为一行，拆成多行，以利于后续页面上进行显示
+     * */
     @Override
     public void fillByRow(List<Category> categories) {
         int productNumberEachRow = 8;
@@ -99,7 +109,10 @@ public class ProductServiceImpl implements ProductService{
             for (int i = 0;i<products.size();i+=productNumberEachRow){
                 int size = i+productNumberEachRow;
                 size = size>products.size()?products.size():size;
+                List<Product> productsOfEachRow = products.subList(i,size);
+                productsByRow.add(productsOfEachRow);
             }
+            c.setProductsByRow(productsByRow);
         }
     }
 
