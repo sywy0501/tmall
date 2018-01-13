@@ -1,7 +1,6 @@
 package com.cs.tmall.controller;
 
-import com.cs.tmall.pojo.Category;
-import com.cs.tmall.pojo.User;
+import com.cs.tmall.pojo.*;
 import com.cs.tmall.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,6 +41,8 @@ public class ForeController {
     ProductImageService productImageService;
     @Autowired
     UserService userService;
+    @Autowired
+    ReviewService reviewService;
 
     @RequestMapping("forehome")
     public String home(Model model){
@@ -86,5 +87,24 @@ public class ForeController {
     public String logout(HttpSession session){
         session.removeAttribute("user");
         return "redirect:forehome";
+    }
+
+    @RequestMapping("foreproduct")
+    public String product(int pid,Model model){
+        Product product = productService.get(pid);
+
+        List<ProductImage> productSingleImages = productImageService.list(pid,ProductImageService.TYPE_SINGLE);
+        List<ProductImage> productDetailImages = productImageService.list(pid,ProductImageService.TYPE_DETAIL);
+        product.setProductDetailImages(productDetailImages);
+        product.setProductSingleImages(productSingleImages);
+
+        List<PropertyValue> pvs = propertyValueService.list(product.getId());
+        List<Review> reviews = reviewService.list(product.getId());
+        productService.setSaleAndReviewNumber(product);
+
+        model.addAttribute("reviews",reviews);
+        model.addAttribute("p",product);
+        model.addAttribute("pvs",pvs);
+        return "fore/product";
     }
 }
