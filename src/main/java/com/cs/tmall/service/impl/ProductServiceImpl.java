@@ -5,9 +5,7 @@ import com.cs.tmall.pojo.Category;
 import com.cs.tmall.pojo.Product;
 import com.cs.tmall.pojo.ProductExample;
 import com.cs.tmall.pojo.ProductImage;
-import com.cs.tmall.service.CategoryService;
-import com.cs.tmall.service.ProductImageService;
-import com.cs.tmall.service.ProductService;
+import com.cs.tmall.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +22,10 @@ import java.util.List;
  */
 @Service
 public class ProductServiceImpl implements ProductService{
+    @Autowired
+    ReviewService reviewService;
+    @Autowired
+    OrderItemService orderItemService;
     @Autowired
     ProductMapper productMapper;
     @Autowired
@@ -135,6 +137,25 @@ public class ProductServiceImpl implements ProductService{
     public void setCategory(List<Product> ps){
         for (Product p : ps) {
             setCategory(p);
+        }
+    }
+
+    /**
+     * 为产品设置销量和评价数量
+     * */
+    @Override
+    public void setSaleAndReviewNumber(Product p) {
+        int saleCount = orderItemService.getSaleCount(p.getId());
+        p.setSaleCount(saleCount);
+
+        int reviewCount = reviewService.getCount(p.getId());
+        p.setReviewCount(reviewCount);
+    }
+
+    @Override
+    public void setSaleAndReviewNumber(List<Product> products) {
+        for (Product p:products){
+            setSaleAndReviewNumber(p);
         }
     }
 }
