@@ -1,15 +1,19 @@
 package com.cs.tmall.controller;
 
+import com.cs.tmall.comparator.*;
 import com.cs.tmall.pojo.*;
 import com.cs.tmall.service.*;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -106,5 +110,56 @@ public class ForeController {
         model.addAttribute("p",product);
         model.addAttribute("pvs",pvs);
         return "fore/product";
+    }
+
+    @RequestMapping("forecheckLogin")
+    @ResponseBody
+    public String checkLogin(HttpSession session){
+        User user = (User) session.getAttribute("user");
+        if (null!=user){
+            return "success";
+        }
+        return "fail";
+    }
+
+    @RequestMapping("forecategory")
+    public String category(int cid,String sort,Model model){
+        Category category = categoryService.get(cid);
+        productService.fill(category);
+        productService.setSaleAndReviewNumber(category.getProducts());
+
+        if (null!=sort){
+            switch (sort){
+                case "review":
+                    Collections.sort(category.getProducts(),new ProductReviewComparator());
+                    break;
+
+                case "date":
+                    Collections.sort(category.getProducts(),new ProductDateComparator());
+                    break;
+
+                case "saleCount":
+                    Collections.sort(category.getProducts(),new ProductSaleCountComparator());
+                    break;
+                case "price":
+                    Collections.sort(category.getProducts(),new ProductPriceComparator());
+                    break;
+                case "all":
+                    Collections.sort(category.getProducts(),new ProductAllComparator());
+                    break;
+            }
+        }
+        model.addAttribute("c",category);
+        return "fore/category";
+    }
+
+    @RequestMapping("foresearch")
+    public String search(String key,Model model){
+        PageHelper.offsetPage(0,20);
+        List<Product> ps = productService.search(key);
+        productService.setSaleAndReviewNumber(ps);
+        model.addAttribute("ps",ps);
+
+        return "fore/searchResult";
     }
 }
