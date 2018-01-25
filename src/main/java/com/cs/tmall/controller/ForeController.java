@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -122,6 +123,19 @@ public class ForeController {
         return "fail";
     }
 
+    @RequestMapping("foreloginAjax")
+    @ResponseBody
+    public String loginAjax(@RequestParam("name")String name,@RequestParam("password")String password,HttpSession session){
+        name = HtmlUtils.htmlEscape(name);
+        User user = userService.get(name,password);
+
+        if (null==user){
+            return "fail";
+        }
+        session.setAttribute("user",user);
+        return "success";
+    }
+
     @RequestMapping("forecategory")
     public String category(int cid,String sort,Model model){
         Category category = categoryService.get(cid);
@@ -147,6 +161,7 @@ public class ForeController {
                 case "all":
                     Collections.sort(category.getProducts(),new ProductAllComparator());
                     break;
+                default:
             }
         }
         model.addAttribute("c",category);
@@ -161,5 +176,78 @@ public class ForeController {
         model.addAttribute("ps",ps);
 
         return "fore/searchResult";
+    }
+
+    @RequestMapping("forebuyone")
+    public String buyone(int pid,int num,HttpSession session){
+        Product product = productService.get(pid);
+        int oiid = 0;
+
+        User user = (User) session.getAttribute("user");
+        boolean found = false;
+        List<OrderItem> ois = orderItemService.listByUser(user.getId());
+
+        for (OrderItem oi:ois){
+            if (oi.getProduct().getId().intValue()== product.getId().intValue()){
+                oi.setNumber(oi.getNumber()+num);
+                orderItemService.update(oi);
+                found = true;
+                oiid = oi.getId();
+                break;
+            }
+        }
+
+        if (!found){
+            OrderItem oi = new OrderItem();
+            oi.setUid(user.getId());
+            oi.setNumber(num);
+            oi.setPid(pid);
+            orderItemService.add(oi);
+            oiid = oi.getId();
+        }
+        return "redirect:forebuy?oiid="+oiid;
+    }
+
+    @RequestMapping("forebuy")
+    public String buy(Model model,String[] oiid,HttpSession session){
+        List<OrderItem> ois = new ArrayList<>();
+        float total = 0F;
+
+        for (String strid:oiid){
+            int id = Integer.parseInt(strid);
+            OrderItem oi = orderItemService.get(id);
+            total +=oi.getProduct().getPromotePrice()*oi.getNumber();
+            ois.add(oi);
+        }
+
+        session.setAttribute("ois",ois);
+        model.addAttribute("total",total);
+        return "fore/buy";
+    }
+
+    @RequestMapping("foreaddCart")
+    @ResponseBody
+    public String addCart(int pid,int num,Model model,HttpSession session){
+        Product p=productService.get(pid);
+        User user = (User) session.getAttribute("user");
+        boolean found = false;
+
+        List<OrderItem> ois = orderItemService.listByUser(user.getId());
+        for (OrderItem oi:ois){
+            if (oi.getProduct().getId().intValue()==p.getId().intValue()){
+                oi.setNumber(oi.getNumber()+num);
+                orderItemService.update(oi);
+                found = true;
+                break;
+            }
+        }
+        if (!found){
+            OrderItem oi = new OrderItem();
+            oi.setUid(user.getId());
+            oi.setNumber(num);
+            oi.setPid(pid);
+            orderItemService.add(oi);
+        }
+        return "success";
     }
 }
