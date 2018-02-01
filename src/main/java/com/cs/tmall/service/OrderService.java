@@ -1,6 +1,7 @@
 package com.cs.tmall.service;
 
 import com.cs.tmall.pojo.Order;
+import com.cs.tmall.pojo.OrderItem;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public interface OrderService {
 
     void add(Order c);
 
+    float add(Order c, List<OrderItem> ois);
     void delete(int id);
     void update(Order c);
     Order get(int id);
