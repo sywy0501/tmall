@@ -3,11 +3,15 @@ package com.cs.tmall.service.impl;
 import com.cs.tmall.mapper.OrderMapper;
 import com.cs.tmall.pojo.Order;
 import com.cs.tmall.pojo.OrderExample;
+import com.cs.tmall.pojo.OrderItem;
 import com.cs.tmall.pojo.User;
+import com.cs.tmall.service.OrderItemService;
 import com.cs.tmall.service.OrderService;
 import com.cs.tmall.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,9 +31,30 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     UserService userService;
 
+    @Autowired
+    OrderItemService orderItemService;
+
     @Override
     public void add(Order c) {
         orderMapper.insert(c);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackForClassName = "Exception")
+    public float add(Order o, List<OrderItem> ois) {
+        float total = 0;
+        add(o);
+
+        if (false) {
+            throw new RuntimeException();
+        }
+
+        for (OrderItem oi : ois) {
+            oi.setOid(o.getId());
+            orderItemService.update(oi);
+            total += oi.getProduct().getPromotePrice() * oi.getNumber();
+        }
+        return total;
     }
 
     @Override
@@ -47,18 +72,21 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.selectByPrimaryKey(id);
     }
 
-    public List<Order> list(){
-        OrderExample example =new OrderExample();
+    public List<Order> list() {
+        OrderExample example = new OrderExample();
         example.setOrderByClause("id desc");
-        List<Order> result =orderMapper.selectByExample(example);
+        List<Order> result = orderMapper.selectByExample(example);
         setUser(result);
         return result;
     }
-    public void setUser(List<Order> os){
-        for (Order o : os)
+
+    public void setUser(List<Order> os) {
+        for (Order o : os) {
             setUser(o);
+        }
     }
-    public void setUser(Order o){
+
+    public void setUser(Order o) {
         int uid = o.getUid();
         User u = userService.get(uid);
         o.setUser(u);

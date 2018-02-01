@@ -4,6 +4,7 @@ import com.cs.tmall.comparator.*;
 import com.cs.tmall.pojo.*;
 import com.cs.tmall.service.*;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -257,5 +260,60 @@ public class ForeController {
         List<OrderItem> ois = orderItemService.listByUser(user.getId());
         model.addAttribute("ois",ois);
         return "fore/cart";
+    }
+
+    @RequestMapping("forechangeOrderItem")
+    @ResponseBody
+    public String changeorderItem(Model model,HttpSession session,int pid,int number){
+        User user = (User) session.getAttribute("user");
+        if (null == user){
+            return "fail";
+        }
+
+        List<OrderItem> ois = orderItemService.listByUser(user.getId());
+        for (OrderItem oi:ois){
+            if (oi.getProduct().getId().intValue() ==pid){
+                oi.setNumber(number);
+                orderItemService.update(oi);
+                break;
+            }
+        }
+        return "success";
+    }
+
+    @RequestMapping("foredeleteOrderItem")
+    @ResponseBody
+    public String deleteOrderItem(Model model,HttpSession session,int oiid){
+        User user= (User) session.getAttribute("user");
+        if (null==user){
+            return "fail";
+        }
+        orderItemService.delete(oiid);
+        return "success";
+    }
+
+    @RequestMapping("forecreateOrder")
+    public String createOrder(Model model,Order order,HttpSession session){
+        User user = (User) session.getAttribute("user");
+
+        String orderCode = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date())+ RandomUtils.nextInt(10000);
+        order.setOrderCode(orderCode);
+        order.setCreateDate(new Date());
+        order.setUid(user.getId());
+        order.setStatus(OrderService.waitPay);
+        List<OrderItem> ois = (List<OrderItem>) session.getAttribute("ois");
+
+        float total = orderService.add(order,ois);
+        return "redirect:forealipay?oid="+order.getId()+"&total="+total;
+    }
+
+    @RequestMapping("forepayed")
+    public String payed(int oid,float total,Model model){
+        Order order = orderService.get(oid);
+        order.setStatus(OrderService.waitDelivery);
+        order.setPayDate(new Date());
+        orderService.update(order);
+        model.addAttribute("o",order);
+        return "fore/payed";
     }
 }
